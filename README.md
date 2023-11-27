@@ -21,4 +21,4 @@ Mohamed Mansour - Hamdy47@aucegypt.edu - 900222990
 
 Mohamed Abdelmagid - [LinkedIn](https://www.linkedin.com/in/mohamed-abdelmagid-3aab51195/) - mabdelmagid@aucegypt.edu - 900223215
 
-Moaz Essam - (linked in) - (email) - (SID)
+Moaz Essam - [LinkedIn](https://www.linkedin.com/in/moaz-essam-hafez-464129236/) - moaaaaz@aucegypt.edy - (900214137)
