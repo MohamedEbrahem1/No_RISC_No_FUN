@@ -12,8 +12,8 @@ assign opcode = inst[6:0];
       gen_out = 0;
     end
 
-    if (opcode == 7'1100011 ) begin
-      // B-type instruction
+    if (opcode == 7'b1100011 ) begin
+      // B-type instructio
       gen_out[10] = inst[7];
       gen_out[3:0] = inst[11:8];
       gen_out[9:4] = inst[30:25];
