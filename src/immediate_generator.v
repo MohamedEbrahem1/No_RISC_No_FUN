@@ -2,7 +2,7 @@ module ImmGen (
   input [31:0] inst,
   output reg [31:0] gen_out
 );
-
+assign opcode = inst[6:0];
   always @* begin
     if (inst[31]) begin
       // Sign extension for negative immediate values
@@ -12,15 +12,15 @@ module ImmGen (
       gen_out = 0;
     end
 
-    if (inst[6]) begin
-      // I-type instruction
+    if (opcode == 7'1100011 ) begin
+      // B-type instruction
       gen_out[10] = inst[7];
       gen_out[3:0] = inst[11:8];
       gen_out[9:4] = inst[30:25];
       gen_out[11]  = inst[31];
     end
     else begin
-      if (inst[5]) begin
+      if (opcode == 7'b0100011) begin
         // S-type instruction
         gen_out[11:5] = inst[31:25];
         gen_out[4:0]  = inst[11:7];
