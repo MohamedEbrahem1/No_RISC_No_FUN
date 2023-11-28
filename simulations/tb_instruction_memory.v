@@ -23,7 +23,7 @@ module InstructionMemory_tb;
     reg [9:0] clock_counter = 0;
     initial begin
         clk = 0;
-        forever #5 clk = ~clk; // Toggle the clock every 5 time units
+        forever #5 clk = ~clk; 
     end
 
     // Initial values
@@ -47,7 +47,7 @@ module InstructionMemory_tb;
         #10 pc = 4;
         #10 $display("Instruction at PC = %0d is %h", pc, instruction);
 
-        #10 $finish; // Stop simulation after 10 time units
+        #10 $finish; 
     end
 
 endmodule

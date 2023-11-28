@@ -1,4 +1,5 @@
 `timescale 1ns / 1ps
+`include "../src/driver.v"
 //////////////////////////////////////////////////////////////////////////////////
 // Company: 
 // Engineer: 
@@ -33,11 +34,11 @@ module tb();
     driver driver2(.clk(clk), .rst(rst),.regWrite(regWrite), .instAddr(instAddr));
 
     initial begin
+        $dumpfile("tb.vcd");
+        $dumpvars(0, tb);
         rst =1; 
-        regWrite = 0;
         #period
         rst=0;
-        regWrite = 1;
         #period
         instAddr = 0; 
         #period
@@ -66,7 +67,7 @@ module tb();
         instAddr = 12; 
         #period
         instAddr = 13; 
-
+        $finish;
     end
-    
+
 endmodule

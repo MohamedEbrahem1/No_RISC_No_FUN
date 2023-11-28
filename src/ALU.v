@@ -22,9 +22,9 @@
 
 module ALU #(parameter n = 32) (
     input clk, 
-    [n-1:0] rs1,  // how to make sure that it's the same n? 
-    [n-1:0] rs2,  
-    [31:0] inst,
+    input [n-1:0] rs1,  // how to make sure that it's the same n? 
+    input [n-1:0] rs2,  
+    input [31:0] inst,
     output reg [n-1:0] res, 
     output reg zf
     );
@@ -129,7 +129,7 @@ module ALU #(parameter n = 32) (
         end
         
         
-        assign zf = (res==0)? 1: 0; // assign zf
+         zf = (res==0)? 1: 0; // assign zf
 
 
 end
