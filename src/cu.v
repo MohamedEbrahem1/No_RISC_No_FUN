@@ -21,7 +21,7 @@ module ControlUnit (
         ALUOp    = 2'b10;
       end
 
-      5'b00000: begin
+      5'b00100: begin
         MemRead  = 1;
         MemtoReg = 1;
         ALUSrc   = 1;
