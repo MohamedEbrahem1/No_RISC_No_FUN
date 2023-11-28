@@ -60,8 +60,6 @@ Thank you for your interest in contributing to our project! By contributing, you
 8. **Merge:**
    Once your changes are approved, they will be merged into the `working_directory` branch. The `main` branch is reserved for versions that users can use.
 
-Certainly! Here's the modified section with additional details for Windows users in the `CONTRIBUTING.md` file:
-
 ```markdown
 ...
 
