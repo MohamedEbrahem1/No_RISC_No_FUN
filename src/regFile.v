@@ -24,12 +24,12 @@ module regFile #(parameter n = 32) (  // n-bit regfile
         input clk,
         rst, 
         regWrite, // flag from CU
-        [4:0]readAddr1, // how many bits ? [4:0] ?
-        [4:0]readAddr2, //
-        [4:0]writeAddr, //
-        [n-1:0] writeData, // 32 bits  [n-1:0]
+        input [4:0]readAddr1, // how many bits ? [4:0] ?
+        input [4:0]readAddr2, //
+        input [4:0]writeAddr, //
+        input [n-1:0] writeData, // 32 bits  [n-1:0]
         output reg [n-1:0] rs1, //  [n-1:0]
-        reg [n-1:0] rs2
+        output reg [n-1:0] rs2
     );
     reg [n-1: 0] regFileArr [31:0]; // recheck logic
     integer i;
