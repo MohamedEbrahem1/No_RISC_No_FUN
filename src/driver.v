@@ -1,8 +1,4 @@
 `timescale 1ns / 1ps
-`include "../src/instMem.v"
-`include "../src/ALU.v"
-`include "../src/regFile.v"
-`include "../src/cu.v"
 //////////////////////////////////////////////////////////////////////////////////
 // Company: 
 // Engineer: 
@@ -25,36 +21,113 @@
 
 
 module driver(
-    input clk,
+    input clk_in,
     rst,
-    regWrite,
-    input [4:0] instAddr
+//    [4:0] instAddr,
+    [4:0] switch,
+    output [3:0] anode,
+    [0:6] seg
 );
+    wire Branch, MemRead, MemtoReg, MemWrite, ALUSrc, RegWrite;
+    wire [1:0] ALUOp;
     wire [31:0] rs1;
     wire [31:0] rs2;
     wire [31:0] res;
     wire [31:0] inst;
     wire zf;
-    wire branch;
-    wire MemRead;
-    wire MemtoReg;
-    wire MemWrite;
-    wire ALUSrc;
-    wire [0:1] ALUOp;
-    ControlUnit cu (
-    .opcode(inst[6:2]),
-    .Branch(Branch),
-    .MemRead(MemRead),
-    .MemtoReg(MemtoReg),
-    .MemWrite(MemWrite),
-    .ALUSrc(ALUSrc),
-    .RegWrite(regWrite),
-    .ALUOp(ALUOp)
-  );
-    instMem insts(.addr(instAddr), .inst(inst));
-    regFile reg1 (.clk(clk), .rst(rst), .regWrite(regWrite), .readAddr1(inst[19:15]), .readAddr2(inst[24:20]),.writeAddr(inst[11:7]), .writeData(res), .rs1(rs1), .rs2(rs2));   
-    ALU alu1 ( .clk(clk), .rs1(rs1), .rs2(rs2), .inst(inst), .res(res), .zf(zf));
-  
+    wire [3:0]alu_ctrl;
+    reg [31:0] instructions; 
+    reg [9:0] PC =9'b0;
+    wire [31:0] immgenOut;
+    wire [31:0] muxout;
     
+    
+    
+    clk_divider #(10) clkd (
+        .clk_in(clk_in), 
+        .reset(rst),  
+        .clk_out(clk) 
+    );
+    
+    always@(posedge clk)
+        begin
+        
+        
+            if(rst == 1)
+                PC <= 0;
+            else if (PC < 52)
+                  PC <= PC + 4;
+            
+        end
+    instMem insts(.addr(PC[9:2]), .inst(inst));
+
+//    always @( posedge clk) begin 
+//        instructions = inst; 
+//    end 
+    
+    aluctrl aluctrl( 
+        .alu_op(ALUOp),  
+        .func7bit30(inst[30]),
+ 
+        .func3(inst[14:12]),
+ 
+        .alu_ctrl(alu_ctrl)
+        );
+        
+    ControlUnit cu (
+        .opcode(inst[6:2]),
+        .Branch(Branch), 
+        .MemRead(MemRead), 
+        .MemtoReg(MemtoReg), 
+        .MemWrite(MemWrite), 
+        .ALUSrc(ALUSrc), 
+        .RegWrite(RegWrite), 
+        .ALUOp(ALUOp)
+        );
+            wire [0:12] reg_value;
+
+    regFile reg1 (
+    .clk(clk), 
+    .rst(rst), 
+    .regWrite(RegWrite), 
+    .readAddr1(inst[19:15]), 
+    .readAddr2(inst[24:20]),
+    .writeAddr(inst[11:7]), 
+    .writeData(res), 
+    .rs1(rs1), 
+    .rs2(rs2),
+    .reg_address(switch),
+    .reg_display(reg_value)
+    );   
+
+    ImmGen gen (
+        .inst(inst),
+        .gen_out(immgenOut)
+        );
+    mux2x1 alumux ( 
+        .a(rs2),
+        .b(immgenOut),
+        .s(ALUSrc),
+        .out(muxout)
+    );
+    ALU alu1 (
+        .clk(clk), 
+        .rs1(rs1), 
+        .rs2(muxout), 
+        .inst(inst),
+        .alu_ctrl(alu_ctrl), 
+        .res(res), 
+        .zf(zf)
+        );
+
+    SevenSegDis show_reg_data (
+  .clk_in(clk_in),
+  .rst(rst),
+  .num(reg_value),
+  .Anode(anode),
+  .seg(seg)
+);
+
+
     
 endmodule

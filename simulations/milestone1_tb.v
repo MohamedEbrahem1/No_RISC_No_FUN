@@ -1,5 +1,4 @@
 `timescale 1ns / 1ps
-`include "../src/driver.v"
 //////////////////////////////////////////////////////////////////////////////////
 // Company: 
 // Engineer: 
@@ -22,52 +21,34 @@
 
 
 module tb();
-    localparam period = 1000;
-    reg clk, rst, regWrite;
-    reg [4:0] instAddr;
+    localparam period = 100;
+    reg clk, rst;
+//    reg [4:0] instAddr;
     initial begin
         clk = 1'b0;
         forever begin
         #50 clk = ~clk;
         end 
     end
-    driver driver2(.clk(clk), .rst(rst),.regWrite(regWrite), .instAddr(instAddr));
+    reg [4:0] switch;
+    wire [0:6] seg;
+    wire [1:0] anode;
+    driver driver2(.clk_in(clk), .rst(rst), .switch(switch), .seg(seg), .anode(anode));
 
     initial begin
-        $dumpfile("tb.vcd");
-        $dumpvars(0, tb);
+    switch = 5'b00011;
         rst =1; 
         #period
         rst=0;
         #period
-        instAddr = 0; 
         #period
-        instAddr = 1; 
         #period
-        instAddr = 2; 
         #period
-        instAddr = 3; 
         #period
-        instAddr = 4; 
         #period
-        instAddr = 5; 
         #period
-        instAddr = 6; 
-        #period
-        instAddr = 7; 
-        #period
-        instAddr = 8; 
-        #period
-        instAddr = 9; 
-        #period
-        instAddr = 10; 
-        #period
-        instAddr = 11; 
-        #period
-        instAddr = 12; 
-        #period
-        instAddr = 13; 
-        $finish;
-    end
 
+   $finish;
+    end
+    
 endmodule
