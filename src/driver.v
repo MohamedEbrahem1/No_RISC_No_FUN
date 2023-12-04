@@ -37,9 +37,13 @@ module driver(
     wire zf;
     wire [3:0]alu_ctrl;
     reg [31:0] instructions; 
-    reg [9:0] PC =9'b0;
     wire [31:0] immgenOut;
     wire [31:0] muxout;
+    wire negative;
+    wire [0:12] reg_value;
+    wire  branch_sel;
+    wire jump;
+    wire [9:0] PC;
     
     
     
@@ -49,17 +53,10 @@ module driver(
         .clk_out(clk) 
     );
     
-    always@(posedge clk)
-        begin
         
-        
-            if(rst == 1)
-                PC <= 0;
-            else if (PC < 52)
-                  PC <= PC + 4;
-            
-        end
-    instMem insts(.addr(PC[9:2]), .inst(inst));
+        pc program_counter (.clk(clk), .rst(rst), .immediate(immgenOut), .branch_sel(branch_sel), .instruction_25(inst[25:0]), .jump(jump), .counter(PC));
+        branch_ctrl branch_control (.branch_op(inst[14:12]),.branch(Branch),.zf(zf),.negative(negative),.branch_sel(branch_sel));
+    instMem insts(.addr(PC), .inst(inst));
 
 //    always @( posedge clk) begin 
 //        instructions = inst; 
@@ -84,7 +81,6 @@ module driver(
         .RegWrite(RegWrite), 
         .ALUOp(ALUOp)
         );
-            wire [0:12] reg_value;
 
     regFile reg1 (
     .clk(clk), 
@@ -117,7 +113,8 @@ module driver(
         .inst(inst),
         .alu_ctrl(alu_ctrl), 
         .res(res), 
-        .zf(zf)
+        .zf(zf),
+        .negative(negative)
         );
 
     SevenSegDis show_reg_data (

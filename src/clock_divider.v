@@ -10,7 +10,7 @@ module clk_divider #(parameter DIVIDE_BY = 50000000)(
 
 wire [31:0] count;
 modulo_counter #(.x(32),.n(DIVIDE_BY)) counterMod
-(.clk(clk_in), .reset(reset), .enable(1), .count(count));
+(.clk(clk_in), .reset(reset), .enable(1'b1), .count(count));
 always @ (posedge clk_in, posedge reset) begin
 if (reset)
 clk_out <= 0;

@@ -27,7 +27,8 @@ module ALU #(parameter n = 32) (
     [31:0] inst,
     [3:0] alu_ctrl, 
     output reg [n-1:0] res, 
-    output reg zf
+    output reg zf,
+    output reg negative
     );
     wire [6:0] opcode = inst [6:0];
     wire [2:0] func3 = inst[14:12];
@@ -51,6 +52,8 @@ module ALU #(parameter n = 32) (
              4'b1010 : res = (rs1 >>> rs2);
              default: res = 32'd0;
         endcase 
+        assign zf = (res==0)? 1: 0;
+        assign negative = (res<0) ? 1 : 0;
      end 
      /*
      initial begin 
