@@ -1,3 +1,5 @@
+`timescale 1ns / 1ps
+
 module ControlUnit (
   input [6:2] opcode,
   output reg Branch, MemRead, MemtoReg, MemWrite, ALUSrc, RegWrite,

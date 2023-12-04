@@ -21,9 +21,12 @@
 
 
 module driver(
-    input clk,
+    input clk_in,
     rst,
-    [4:0] instAddr
+//    [4:0] instAddr,
+    [4:0] switch,
+    output [3:0] anode,
+    [0:6] seg
 );
     wire Branch, MemRead, MemtoReg, MemWrite, ALUSrc, RegWrite;
     wire [1:0] ALUOp;
@@ -34,15 +37,27 @@ module driver(
     wire zf;
     wire [3:0]alu_ctrl;
     reg [31:0] instructions; 
-    reg [9:0] PC;
+    reg [9:0] PC =9'b0;
     wire [31:0] immgenOut;
     wire [31:0] muxout;
+    
+    
+    
+    clk_divider #(10) clkd (
+        .clk_in(clk_in), 
+        .reset(rst),  
+        .clk_out(clk) 
+    );
+    
     always@(posedge clk)
         begin
+        
+        
             if(rst == 1)
                 PC <= 0;
-            else
-            PC <= PC + 4;
+            else if (PC < 52)
+                  PC <= PC + 4;
+            
         end
     instMem insts(.addr(PC[9:2]), .inst(inst));
 
@@ -69,7 +84,8 @@ module driver(
         .RegWrite(RegWrite), 
         .ALUOp(ALUOp)
         );
-         
+            wire [0:12] reg_value;
+
     regFile reg1 (
     .clk(clk), 
     .rst(rst), 
@@ -79,7 +95,9 @@ module driver(
     .writeAddr(inst[11:7]), 
     .writeData(res), 
     .rs1(rs1), 
-    .rs2(rs2)
+    .rs2(rs2),
+    .reg_address(switch),
+    .reg_display(reg_value)
     );   
 
     ImmGen gen (
@@ -101,7 +119,15 @@ module driver(
         .res(res), 
         .zf(zf)
         );
-  
-    
+
+    SevenSegDis show_reg_data (
+  .clk_in(clk_in),
+  .rst(rst),
+  .num(reg_value),
+  .Anode(anode),
+  .seg(seg)
+);
+
+
     
 endmodule

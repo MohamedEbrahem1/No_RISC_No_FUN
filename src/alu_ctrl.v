@@ -1,3 +1,5 @@
+`timescale 1ns / 1ps
+
 module aluctrl (
     input [1:0] alu_op, // coming from cu
     input func7bit30,
@@ -24,15 +26,15 @@ module aluctrl (
                         default : alu_ctrl = 4'bxxxx;
                     endcase
             2'b11 : case({func3})
-                        4'b000 : alu_ctrl = 4'b0010; // addi
-                        4'b000 : alu_ctrl = 4'b0110; // subi
-                        4'b111 : alu_ctrl = 4'b0000; // andi
-                        4'b110 : alu_ctrl = 4'b0001; // ori
-                        4'b001 : alu_ctrl = 4'b0011; // slli
-                        4'b010 : alu_ctrl = 4'b0100; // slti
-                        4'b011 : alu_ctrl = 4'b0101; // sltui
-                        4'b100 : alu_ctrl = 4'b0111; // xori
-                        4'b101 : alu_ctrl = 4'b1000; // srli
+                        3'b000 : alu_ctrl = 4'b0010; // addi
+                        3'b000 : alu_ctrl = 4'b0110; // subi
+                        3'b111 : alu_ctrl = 4'b0000; // andi
+                        3'b110 : alu_ctrl = 4'b0001; // ori
+                        3'b001 : alu_ctrl = 4'b0011; // slli
+                        3'b010 : alu_ctrl = 4'b0100; // slti
+                        3'b011 : alu_ctrl = 4'b0101; // sltui
+                        3'b100 : alu_ctrl = 4'b0111; // xori
+                        3'b101 : alu_ctrl = 4'b1000; // srli
           //              4'b101 : alu_ctrl = 4'b1010; // srai
                         default : alu_ctrl = 4'bxxxx;
                     endcase

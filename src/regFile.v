@@ -24,16 +24,19 @@ module regFile #(parameter n = 32) (  // n-bit regfile
         input clk,
         rst, 
         regWrite, // flag from CU
-        [4:0]readAddr1, // how many bits ? [4:0] ?
+        [4:0]readAddr1, // 
         [4:0]readAddr2, //
         [4:0]writeAddr, //
         [n-1:0] writeData, // 32 bits  [n-1:0]
+        input [4:0] reg_address,
         output [n-1:0] rs1, //  [n-1:0]
-        [n-1:0] rs2
+        [n-1:0] rs2,
+         output  [12:0] reg_display
+
     );
-    reg [n-1: 0] regFileArr [31:0]; // recheck logic
+    reg [n-1: 0] regFileArr [31:0]; 
     integer i;
-    initial begin // initialize the regfile with 0's // useless uf testbench starts with rst = 1
+    initial begin // initialize the regfile with 0's 
         for (i = 0; i < 32; i = i + 1) begin
             regFileArr[i] = i;
         end
@@ -42,20 +45,19 @@ module regFile #(parameter n = 32) (  // n-bit regfile
           assign rs1 = regFileArr[readAddr1];
           assign rs2 = regFileArr[readAddr2];
   
-  always @ (posedge clk) begin
-        if(regWrite) 
+  always @ (posedge clk, posedge rst) begin
+        
+        if (rst) begin
+            for (i = 0; i < 32; i = i + 1) begin
+                regFileArr[i] <= i; // reset all to zero 
+            end
+        end else if(regWrite) 
         begin
             regFileArr[writeAddr] <= writeData;
         end
     // writing W_data to register number W_addr
   end
-  
-//  always @(posedge clk or posedge rst) begin // write operations 
-//        if (rst) begin
-//            for (i = 0; i < 32; i = i + 1) begin
-//                regFileArr[i] <= i; // reset all to zero 
-//            end
-//        end 
-//  end
+assign        reg_display = regFileArr[reg_address];
+
     
 endmodule

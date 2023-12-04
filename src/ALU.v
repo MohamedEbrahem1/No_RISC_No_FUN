@@ -49,6 +49,7 @@ module ALU #(parameter n = 32) (
              4'b0111 : res = (rs1 ^ rs2);
              4'b1000 : res = (rs1 >> rs2);
              4'b1010 : res = (rs1 >>> rs2);
+             default: res = 32'd0;
         endcase 
      end 
      /*
