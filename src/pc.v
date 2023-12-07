@@ -25,26 +25,25 @@ module pc (
     input rst,
     input [31:0] immediate,
     input branch_sel,
-    input [25:0] instruction_25,
-    input jump,
-    output reg [9:0] counter
+    input [1:0] jump,
+    input [31:0] alu_result,
+    output reg [31:0] counter
 );
-    wire [31:0] immediate_shift;
     wire [31:0] if_branch;
-    wire [31:0] if_jump;
-    reg [1:0] shift_amount = 2'd1;
-    assign immediate_shift = immediate * 2'd2;
-    assign if_branch = counter + immediate_shift;
+    assign if_branch = counter + immediate * 2'd2;
     always @(posedge clk or posedge rst) begin
         if (rst == 1) begin
             counter <= 0;
         end
-        else if (counter < 64) begin
+        else if (counter < 100) begin
             if (branch_sel) begin
                 counter <= if_branch;
             end
-            else if (jump) begin
-//                counter <= counter + ;
+            else if (jump == 2'b11) begin
+                counter <= counter + immediate ;
+            end
+            else if (jump == 2'b01) begin
+                counter <= alu_result;
             end
             else begin
                 counter <= counter + 10'd4;

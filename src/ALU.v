@@ -21,19 +21,14 @@
 
 
 module ALU #(parameter n = 32) (
-    input clk, 
     [n-1:0] rs1,  // how to make sure that it's the same n? 
     [n-1:0] rs2,  
-    [31:0] inst,
     [3:0] alu_ctrl, 
     output reg [n-1:0] res, 
-    output reg zf,
-    output reg negative
+    output  reg zf,
+    output  reg negative
     );
-    wire [6:0] opcode = inst [6:0];
-    wire [2:0] func3 = inst[14:12];
-    reg [6:0] func7;
-    reg [11:0] imm;
+
     wire [31:0] negrs2;    
         
     assign negrs2 = (~rs2);
@@ -52,8 +47,9 @@ module ALU #(parameter n = 32) (
              4'b1010 : res = (rs1 >>> rs2);
              default: res = 32'd0;
         endcase 
-         zf = (res==0)? 1: 0;
-         negative = (res<0) ? 1 : 0;
+            zf = (res==0)? 1: 1'b0;
+            negative = (res<0) ? 1 : 1'b0;
      end 
-        
+     
+    
 endmodule

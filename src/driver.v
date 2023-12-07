@@ -26,13 +26,14 @@ module driver(
 //    [4:0] instAddr,
     [4:0] switch,
     output [3:0] anode,
-    [0:6] seg
+    [0:6] seg, output [0:12] reg_value
 );
     wire Branch, MemRead, MemtoReg, MemWrite, ALUSrc, RegWrite;
     wire [1:0] ALUOp;
     wire [31:0] rs1;
     wire [31:0] rs2;
     wire [31:0] res;
+    wire [31:0] jump_res;
     wire [31:0] inst;
     wire zf;
     wire [3:0]alu_ctrl;
@@ -40,10 +41,9 @@ module driver(
     wire [31:0] immgenOut;
     wire [31:0] muxout;
     wire negative;
-    wire [0:12] reg_value;
     wire  branch_sel;
-    wire jump;
-    wire [9:0] PC;
+    wire [1:0] jump;
+    wire [31:0] PC;
     
     
     
@@ -54,8 +54,9 @@ module driver(
     );
     
         
-        pc program_counter (.clk(clk), .rst(rst), .immediate(immgenOut), .branch_sel(branch_sel), .instruction_25(inst[25:0]), .jump(jump), .counter(PC));
         branch_ctrl branch_control (.branch_op(inst[14:12]),.branch(Branch),.zf(zf),.negative(negative),.branch_sel(branch_sel));
+                pc program_counter (.alu_result(res),.clk(clk), .rst(rst), .immediate(immgenOut), .branch_sel(branch_sel), .jump(jump), .counter(PC));
+
     instMem insts(.addr(PC), .inst(inst));
 
 //    always @( posedge clk) begin 
@@ -79,7 +80,8 @@ module driver(
         .MemWrite(MemWrite), 
         .ALUSrc(ALUSrc), 
         .RegWrite(RegWrite), 
-        .ALUOp(ALUOp)
+        .ALUOp(ALUOp),
+        .jump(jump)
         );
 
     regFile reg1 (
@@ -89,7 +91,7 @@ module driver(
     .readAddr1(inst[19:15]), 
     .readAddr2(inst[24:20]),
     .writeAddr(inst[11:7]), 
-    .writeData(res), 
+    .writeData(jump_res), 
     .rs1(rs1), 
     .rs2(rs2),
     .reg_address(switch),
@@ -106,11 +108,12 @@ module driver(
         .s(ALUSrc),
         .out(muxout)
     );
+    wire jump_sel = jump[0];
+    wire pc_4 = PC+32'd4;
+    mux2x1 jalr_mux(.a(res),.b(PC+10'd4),.s(jump_sel),.out(jump_res));
     ALU alu1 (
-        .clk(clk), 
         .rs1(rs1), 
         .rs2(muxout), 
-        .inst(inst),
         .alu_ctrl(alu_ctrl), 
         .res(res), 
         .zf(zf),
