@@ -42,17 +42,26 @@ assign opcode = inst[6:0];
       gen_out[9:4] = inst[30:25];
       gen_out[11]  = inst[31];
     end
-    else begin
-      if (opcode == 7'b0100011) begin
+    else if (opcode == 7'b0100011) begin
         // S-type instruction
         gen_out[11:5] = inst[31:25];
         gen_out[4:0]  = inst[11:7];
+      end
+      else if(opcode == 7'b1101111) begin
+        // jump and link instruction
+        gen_out[20] = inst[31];
+        gen_out[10:1] = inst[30:21];
+        gen_out[11] = inst[20];
+        gen_out[19:12] = inst[19:12];
+      end
+      else if(opcode == 7'b1100111) begin
+        // jump and link register instruction
+        gen_out[11:0] = inst[31:20];
       end
       else begin
         // I intructions
         gen_out[11:0] = inst[31:20];
       end
     end
-  end
 
 endmodule
