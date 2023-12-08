@@ -8,7 +8,8 @@ module scrollDisplay(
     input btn_center, 
     input [31:0] num, 
     output [3:0] Anode,  
-    output [6:0] seg
+    output [6:0] seg,
+    output [0:31]instruction
 );
 
     reg [5:0] scroll_index = 6'b0;
@@ -21,6 +22,8 @@ module scrollDisplay(
 
   wire [1:0] out_cat = {out1, out2};
 
+
+
     SevenSegDis display (
         .clk_in(clk),
         .num({4'b0, num[scroll_index +: 4]}),
@@ -28,6 +31,15 @@ module scrollDisplay(
         .Anode(Anode),
         .seg(seg)
     );
+
+
+    always @(posedge clk && out3)
+begin
+instruction_memory Load(
+    .address(address),
+    .instruction(instruction)
+);
+end
 
     always @(posedge clk) begin
         if (rst) begin
