@@ -4,17 +4,19 @@ module scrollDisplay(
     input clk, 
     input rst,  
     input btn_right, 
-    input btn_left, 
+    input btn_left,
+    input btn_center, 
     input [31:0] num, 
     output [3:0] Anode,  
     output [6:0] seg
 );
 
     reg [5:0] scroll_index = 6'b0;
-    wire out1, out2;
+    wire out1, out2، out3;
 
     SMASH_buttondetector R (.clk_in(clk_in), .rst(rst), .in(btn_right), .out(out1));
     SMASH_buttondetector L (.clk_in(clk_in), .rst(rst), .in(btn_left), .out(out2));
+    SMASH_buttondetector C (.clk_in(clk_in), .rst(rst), .in(btn_center), .out(out3));
 
 
   wire [1:0] out_cat = {out1, out2};
